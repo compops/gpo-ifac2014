@@ -5,14 +5,9 @@ Particle Bayesian optimisation for parameter inference in nonlinear state space 
 
 This code was downloaded from < https://github.com/compops/bayopt > or from < http://users.isy.liu.se/en/rt/johda87/code.html > and contains the code used to produce some of the results in
 
-J. Dahlin and F. Lindsten, 
-Particle filter-based Gaussian Process Optimisation for Parameter Inference. 
-Proceedings of the 18th World Congress of the International Federation of 
-Automatic Control (IFAC), Cape Town, South Africa, August 2014. 
-(submitted, pending review) 
+*J. Dahlin and F. Lindsten, Particle filter-based Gaussian Process Optimisation for Parameter Inference. Proceedings of the 18th World Congress of the International Federation of Automatic Control (IFAC), Cape Town, South Africa, August 2014. (submitted, pending review) *
 
-
-A pre-prent of the paper is found at < http://arxiv.org/abs/1311.0689 >.
+A pre-print of the paper is found at < http://arxiv.org/abs/1311.0689 >.
 
 Requirements
 --------------
