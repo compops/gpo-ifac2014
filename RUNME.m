@@ -49,7 +49,7 @@ sys.xo          = 0;
 par.Npart       = 1000;              % Number of particles
 par.xo          = 0;                 % Initial state
 par.Po          = 0.0001;            % Initial covariance (used in Kalman)
-par.nIter       = 300;               % Number of iterations
+par.nIter       = 100;               % Number of iterations
 par.philimit    = 0.999;             % Maximum abs value of phi
 par.sigmalimit  = 2;                 % Maximum value of sigma (min is 0)
 par.epsilon     = 0.01;              % Exploration vs. Exploitation coef.
@@ -83,7 +83,6 @@ data            = datagen(sys,zeros(sys.T,1));
 % -------------------------------------------------------------------    
 th       = sys;
 ths(1,:) = [ 0.5 0.5 ];
-
 
 for kk = 1:par.nIter
     % -------------------------------------------------------------------
@@ -164,37 +163,20 @@ for ii = t1
 end
 
 [m,s2] = gp(hyp, @infExact, meanfunc, covfunc, likfunc, ths(1:par.nIter,:), ll', t);
-
 ms = reshape(m, length(t1), length(t2));
 
 figure(1);
-clf;
-surface(t1,t2,ms,'EdgeColor','none');
-hold on; 
-plot(ths(:,1),ths(:,2),'k.');
-xlabel('theta_1'); ylabel('theta_2');
-hold off;
+    clf;
+    surface(t1,t2,ms,'EdgeColor','none');
+    hold on; 
+        plot(ths(:,1),ths(:,2),'k.');
+        xlabel('theta_1'); ylabel('theta_2');
+    hold off;
 
 clc;
 disp(['=============== algoritm complete. ===============']); 
 disp(['estimated parameters. phi: ' num2str(thhat(1)) ' and sigma: ' num2str(thhat(2)) ]);
 disp(['true parameters.      phi: ' num2str(sys.phi) ' and sigma: ' num2str(sys.sigmav) ]);
-
-%%
-% Generate thhat for each iteration
-opts.maxevals = 1000; opts.maxits = 1000; opts.showits = 0;
-criteria = @evalMu; Problem.f = criteria;
-thhat=[];
-
-for kk=1:par.nIter
-   % Run DIRECT for thetahat
-    [minval, tmp, hist] = Direct(Problem, bounds, opts, ths(1:kk,:),...
-                               ll(1:kk), hyp, meanfunc, covfunc, likfunc);
-    thhat(kk,:) = tmp';
-    disp(kk);
-end
-
-%save('gpo_svmodel.mat','t1','t2','m','s2','t','ms','ths','thhat','-v6')
 
 % =======================================================================
 % End of file
