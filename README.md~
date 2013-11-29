@@ -23,16 +23,10 @@ Included files
 --------------
 
 **RUNME**
-Executes the Matlab program that reproduces the plot in the paper for the Stochastic volaility model.
+Executes the Matlab program that reproduces the plot in the poster for the Stochastic volaility model. The only difference to the poster is that N=500 particles are used with T=500 data points (this to speed up the execution, the results are good enough using this setting).
 
 **pf**
 Runs a bootstrap particle filter with systematic resampling to estimate the log-likelihood.
 
 **datagen**
 Generates data from a general state space model given function handles and the input.
-
-**evalMu** 
-Evaluates the posterior mean for the Gaussian processes (used by Direct)
-
-**EI** 
-Evaluates the expected improvment by using the Gaussian processes (used by Direct)

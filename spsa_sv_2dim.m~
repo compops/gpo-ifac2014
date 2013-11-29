@@ -1,0 +1,72 @@
+clear all; close all;
+rng(128,'twister');
+
+% =======================================================================
+% System model and parameters
+% x(t+1) = sys.f + sys.fu + sys.fn * v(t),  v(t) ~ N( 0, 1 )
+% y(t)   = sys.g + sys.gu + sys.gn * e(t),  e(t) ~ N( 0, 1 )
+% =======================================================================
+
+sys.f           = @(sys,x,t) sys.phi.*x;
+sys.fu          = @(sys,u,t) 0;
+sys.fn          = @(sys,x,t) sys.sigmav;
+sys.g           = @(sys,x,t) 0;
+sys.gu          = @(sys,u,t) 0;
+sys.gn          = @(sys,x,t) sys.beta .* exp(x./2);
+
+% System parameters
+sys.sigmav      = 0.2; 
+sys.phi         = 0.9;  
+sys.beta        = 0.7;
+sys.T           = 250;      
+sys.xo          = 0;
+
+
+% =======================================================================
+% Algorithm parameters
+% =======================================================================
+
+par.Npart       = 1000;              % Number of particles
+par.xo          = 0;                 % Initial state
+par.Po          = 0.0001;            % Initial covariance (used in Kalman)
+par.nIter       = 150;               % Number of iterations
+a     = 0.03;
+c     = 0.04;
+A     = 0.9 * par.nIter;
+alpha = 0.602;
+gamma = 0.101;
+p = 2;
+
+% Generate data
+data            = datagen(sys,zeros(sys.T,1));
+tth             = sys;
+th(1,:)         = [ 0.5 0.5];
+
+for kk=2:par.nIter
+    % Calculate a_k, c_k and \Delta_k
+    aa(kk)      = a/(A+kk+1)^(alpha);
+    cc(kk)      = c/(kk+1)^(gamma);
+    delta(kk,:) = 2*round(rand(p,1)) - 1;
+
+    % Calculate variables to evaluate the ll in
+    thp(kk,:)   = th(kk-1,:) + cc(kk) * delta(kk,:);
+    thm(kk,:)   = th(kk-1,:) - cc(kk) * delta(kk,:);
+
+    % Evaluate the loss function
+    tth.phi    = thp(kk,1);
+    tth.sigmav = thp(kk,2);
+    lp(kk)     = pf(data,sys,tth,par);
+    
+    tth.phi    = thm(kk,1);
+    tth.sigmav = thm(kk,2);
+    lm(kk)     = pf(data,sys,tth,par);
+
+    % Estimate the gradient
+    g(kk,:)    = ( lp(kk) - lm(kk) )./( delta(kk,:) * 2 * cc(kk) );
+
+    % Update the parameter estimate
+    th(kk,:)   = th(kk-1,:) + aa(kk) * g(kk,:);
+    disp([th(kk,:) aa(kk) * g(kk,:)]);
+end
+
+save('spsa_svmodel.mat','th');

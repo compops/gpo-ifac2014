@@ -3,15 +3,13 @@
 % Particle Bayesian Optimisation for Parameter Inference
 % Hull-White Stochastic Volaility model
 %
-% Reproduces example in 
-% J. Dahlin and F. Lindsten, 
-% Particle filter-based Gaussian Process Optimisation for Parameter Inference. 
-% Proceedings of the 18th World Congress of the International Federation of 
-% Automatic Control (IFAC), Cape Town, South Africa, August 2014. 
-% (submitted, pending review) 
+% Reproduces example in the poster presentation for
+% Dahlin, J. and Lindsten, F. Bayesian Optimisation for Parameter Inference
+%
+% presented at ERNSI Wotrkshop, Nancy, France, September, 2013.
 %
 % Copyright (c) 2013 Johan Dahlin [ johan.dahlin (at) liu.se ]
-% Date: 2013 - 11 -29
+% Date: 2013 - 09 -17
 %
 % Description: Generates data from a state space model
 %
