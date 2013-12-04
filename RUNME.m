@@ -19,7 +19,6 @@
 % =======================================================================
 
 clear all; close all;
-rng(128,'twister');
 
 % =======================================================================
 % System model and parameters
@@ -35,10 +34,10 @@ sys.gu          = @(sys,u,t) 0;
 sys.gn          = @(sys,x,t) sys.beta .* exp(x./2);
 
 % System parameters
-sys.sigmav      = 0.2; 
-sys.phi         = 0.9;  
-sys.beta        = 0.7;
-sys.T           = 250;      
+sys.sigmav      = 0.16; 
+sys.phi         = 0.98;  
+sys.beta        = 0.65;
+sys.T           = 500;      
 sys.xo          = 0;
 
 
@@ -46,9 +45,10 @@ sys.xo          = 0;
 % Algorithm parameters
 % =======================================================================
 
-par.Npart       = 1000;              % Number of particles
+par.Npart       = 2000;              % Number of particles
 par.xo          = 0;                 % Initial state
 par.Po          = 0.0001;            % Initial covariance (used in Kalman)
+par.nInitial    = 20;                % Initial number of random samples
 par.nIter       = 100;               % Number of iterations
 par.philimit    = 0.999;             % Maximum abs value of phi
 par.sigmalimit  = 2;                 % Maximum value of sigma (min is 0)
@@ -61,14 +61,14 @@ opts.showits    = 0;
 bounds          = [-par.philimit, par.philimit; 0 par.sigmalimit];
 
 % Specify functions
-meanfunc        = @meanConst;
+meanfunc        = {@meanSum, {@meanLinear, @meanConst}};
 covfunc         = {@covMaterniso, 3};
 likfunc         = @likGauss;
 
 % Specify priors (overwritten by Emperical Bayes function later)
-hyp0.mean       = -500;
-hyp0.cov        = [1 5];
-hyp0.lik        = -0.5;
+hyp0.mean       = [-500; 0; 2];
+hyp0.cov        = [3 8];
+hyp0.lik        = -1.5;
 
 % Generate data
 data            = datagen(sys,zeros(sys.T,1));
@@ -77,14 +77,20 @@ data            = datagen(sys,zeros(sys.T,1));
 % Main loop
 % =======================================================================
 
-
-% -------------------------------------------------------------------
-% Generate a number of inital parameter sets
-% -------------------------------------------------------------------    
 th       = sys;
-ths(1,:) = [ 0.5 0.5 ];
 
-for kk = 1:par.nIter
+for kk = 1:par.nInitial
+    % -------------------------------------------------------------------
+    % Generate a number of inital parameter sets
+    % -------------------------------------------------------------------    
+
+    ths(kk,:)   = [ par.philimit * 2 * (rand - 0.5) par.sigmalimit * rand];
+    th.phi      = ths(kk,1);
+    th.sigmav   = ths(kk,2);
+    ll(kk)      = pf(data,sys,th,par);
+end
+
+for kk = par.nInitial:par.nIter
     % -------------------------------------------------------------------
     % Sample the likelihood 
     % ----------------------------------------------------------------
@@ -110,7 +116,7 @@ for kk = 1:par.nIter
     [~,nmax] = max(m);
     
     % Extract the maximum observed ll-estimate and its parameters
-    llmax(kk) = m(nmax); % ll(nmax);
+    llmax(kk)   = m(nmax); % ll(nmax);
     thmax(kk,:) = ths(nmax,:);
     
     % -------------------------------------------------------------------
