@@ -131,7 +131,7 @@ for kk = par.nInitial:par.nIter
     eis(kk) = minval;
                               
     % Determine the next point in which to sample the log-likelihood
-    ths(kk+1,:) = newX';
+    ths(kk+1,:) = newX' + 0.02 * ( rand(1,2) - 0.5 );
 
     % -------------------------------------------------------------------
     % Print progress
