@@ -3,9 +3,9 @@ gpo-ifac2014
 
 Particle Bayesian optimisation for parameter inference in nonlinear state space models
 
-This code was downloaded from < https://github.com/compops/gpo-ifac2014 > or from < http://liu.johandahlin.com/ > and contains the code used to produce some of the results in
+This code was downloaded from < https://github.com/compops/gpo-ifac2014 > and contains the code used to produce some of the results in
 
-*J. Dahlin and F. Lindsten, Particle filter-based Gaussian Process Optimisation for Parameter Inference. Proceedings of the 18th World Congress of the International Federation of Automatic Control (IFAC), Cape Town, South Africa, August 2014. *
+J. Dahlin and F. Lindsten, **Particle filter-based Gaussian Process Optimisation for Parameter Inference**. In Proceedings of the 18th World Congress of the International Federation of Automatic Control (IFAC), Cape Town, South Africa, August 2014.
 
 A pre-print of the paper is found at < http://arxiv.org/abs/1311.0689 >.
 
